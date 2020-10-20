@@ -1,0 +1,23 @@
+- hosts: elk
+  roles:
+   - role: elastic.elasticsearch
+  vars:
+   es_heap_size: "2g"
+   es_api_host: "elasticsearch-production"
+   es_config:
+     node.name: "sowelk-1"
+     cluster.name: "sowelk"
+     network.host: 0
+     discovery.seed_hosts: []
+     discovery.type: single-node
+     http.port: 9200
+     bootstrap.memory_lock: true
+     xpack.security.enabled: true
+     xpack.security.transport.ssl.enabled: true
+     xpack.security.transport.ssl.verification_mode: certificate
+     xpack.security.transport.ssl.keystore.path: security/elastic-certificates.p12
+     xpack.security.transport.ssl.truststore.path: security/elastic-certificates.p12
+     xpack.security.http.ssl.enabled: true
+     xpack.security.http.ssl.keystore.path: security/elastic-certificates.p12
+     xpack.security.http.ssl.truststore.path: security/elastic-certificates.p12
+     xpack.security.http.ssl.verification_mode: certificate

@@ -1,0 +1,17 @@
+- hosts: elk
+  roles:
+   - role: elastic.elasticsearch
+  vars:
+   es_heap_size: "2g"
+   es_api_host: "elasticsearch-production"
+   es_config:
+     node.name: "sowelk-1"
+     cluster.name: "sowelk"
+     network.host: 0
+#     cluster.initial_master_nodes: "elasticsearch-production"
+     discovery.seed_hosts: []
+     discovery.type: single-node
+     http.port: 9200
+#     cluster.remote.connect: false
+#    bootstrap.memory_lock: true
+#     indices.recovery.max_bytes_per_sec: 100mb
