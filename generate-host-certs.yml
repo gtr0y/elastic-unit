@@ -1,0 +1,16 @@
+- name: Generate an OpenSSL certificate signed with our own CA cert
+  #connection: ssh
+  connection: local
+  gather_facts: false
+  hosts: ca
+  tasks:
+    - name: Im a task
+      debug:
+        msg: "Im a task message"
+    - name: Generating Cert
+      community.crypto.x509_certificate:
+        path: "{{ playbook_dir }}/node.crt"
+        csr_path: "{{ playbook_dir }}/node.csr"
+        ownca_path: /home/gt/devops/ca-diox/ca-diox.crt
+        ownca_privatekey_path: /home/gt/devops/ca-diox/ca-diox.key
+        provider: ownca

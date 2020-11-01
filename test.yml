@@ -1,0 +1,4 @@
+- name: Get droplet Size Slug where vcpus is 1
+  community.digitalocean.digital_ocean_size_info:
+    oauth_token: "{{ digio_ssh_key }}"
+  register: resp_out
