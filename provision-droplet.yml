@@ -1,11 +1,35 @@
+---
 - name: Ensure a droplet is present with SSH keys installed
-  community.digitalocean.digital_ocean_droplet:
-    state: present
-    id: 101
-    name: droptest
-    oauth_token: "{{ digio_ssh_key }}"
-    size: s-1vcpu-1gb
-    region: fra1
-    ssh_keys: ['1534404', '1784768']
-    image: ubuntu-20-04-x64
-    wait_timeout: 500
+  hosts: localhost
+  gather_facts: true
+  tasks:
+    - name: Get SSH keys
+      community.digitalocean.digital_ocean_sshkey_info:
+        oauth_token: "{{ digio_ssh_key }}"
+      register: ssh_keys
+    - name: Set facts based on the gathered information
+      set_fact:
+        pubkey_id: "{{ item.id }}"
+        pubkey_name: "{{ item.name }}"
+      loop: "{{ ssh_keys.data | community.general.json_query(ssh_pubkey) }}"
+      vars:
+        ssh_pubkey: "[?name=='gt@ks.diox.es']"
+    - name: Print SSH public key
+      debug: msg="{{ pubkey_id }} ({{ pubkey_name }})"
+    - name: Do the drop
+      community.digitalocean.digital_ocean_droplet:
+        state: present
+        id: 101
+        name: droptest
+        oauth_token: "{{ digio_ssh_key }}"
+        size: s-1vcpu-1gb
+        region: fra1
+        ssh_keys: "[{{ pubkey_id }}]"
+        image: ubuntu-20-04-x64
+        wait_timeout: 500
+      register: resp_out
+    - name: Full Response
+      debug: msg="{{ resp_out }}"
+    - name: Network Info
+      debug: msg="{{ resp_out.data.droplet.networks.v4 }}"
+...

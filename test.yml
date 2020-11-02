@@ -1,4 +1,33 @@
-- name: Get droplet Size Slug where vcpus is 1
-  community.digitalocean.digital_ocean_size_info:
-    oauth_token: "{{ digio_ssh_key }}"
-  register: resp_out
+---
+  - name: Ansible Test
+    hosts: localhost
+    become: yes
+    tasks:
+      - debug: msg="System {{ inventory_hostname }} has uuid {{ ansible_product_uuid }}"
+      - name: Check that Ansible is the latest version
+        apt: 
+          name: ansible
+          state: latest
+      - name: Check that SSH is running
+        service:
+          name: sshd
+          state: started
+      - name: Try to do some DigiO
+        community.digitalocean.digital_ocean_size_info:
+          oauth_token: "{{ digio_ssh_key }}"
+        register: resp_out
+      - debug: msg="{{ resp_out }}"
+      - name: "Try to set a fact"
+        set_fact: 
+          somefact: "It's a fact"
+      - name: "Try to read a fact"
+        debug: msg="{{ somefact }}"
+      - name: "Try to read as a var"
+        debug: var=somefact
+
+...
+
+ #- name: Get droplet Size Slug where vcpus is 1
+ #  community.digitalocean.digital_ocean_size_info:
+ #    oauth_token: "{{ digio_ssh_key }}"
+ #  register: resp_out
